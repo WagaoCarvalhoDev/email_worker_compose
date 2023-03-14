@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:web/models/email_model.dart';
+import 'package:web/pages/secundary_pages.dart';
 
-import 'services/api_service.dart';
+import '../services/api_service.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -70,11 +71,14 @@ class _HomePageState extends State<HomePage> {
                   final form = _formKey.currentState;
                   if (form!.validate()) {
                     form.save();
-                    createClient(
-                      _subject,
-                      _message,
-                    );
-                    print('Front End :${_subject} ${_message}');
+                    createClient(_subject, _message);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => SecondaryPage(
+                                  subject: _subject,
+                                  message: _message,
+                                )));
                   }
                 },
                 child: const Text('Submit'),

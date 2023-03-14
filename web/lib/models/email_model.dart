@@ -14,7 +14,7 @@ class EmailModel {
   Map<String, dynamic> toJson() {
     return {
       "subject": subject,
-      "subject": subject,
+      "message": subject,
     };
   }
 }

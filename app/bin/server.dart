@@ -1,21 +1,21 @@
-import 'dart:io';
-
 import 'package:shelf/shelf.dart';
-import 'package:shelf/shelf_io.dart';
 
 import 'apis/send_email_api.dart';
+import 'infra/custom_server.dart';
 import 'infra/middleware_interception.dart';
 
-void main(List<String> args) async {
-  final ip = InternetAddress.anyIPv4;
+void main() async {
+  var cascadeHandler = Cascade()
+      .add(
+        SendEmailApi().handler,
+      )
+      .handler;
 
   final handler = Pipeline()
       .addMiddleware(logRequests())
       .addMiddleware(MInterception.contentTypeJson)
       .addMiddleware(MInterception.cors)
-      .addHandler(router);
+      .addHandler(cascadeHandler);
 
-  final port = int.parse(Platform.environment['PORT'] ?? '8080');
-  final server = await serve(handler, ip, port);
-  print('Server listening on port ${server.port}');
+  CustomServer().initialize(handler);
 }

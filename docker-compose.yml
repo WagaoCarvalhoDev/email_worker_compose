@@ -4,6 +4,7 @@ volumes:
 networks:
   dbase:
   web:
+  queue_network:
 services:
   db:
     image: postgres:14
@@ -36,5 +37,21 @@ services:
     networks:
       - dbase
       - web
+      - queue_network
     depends_on:
       - db
+      - queue
+  queue:
+    image: redis:bullseye
+    networks:
+      - queue_network
+  worker:
+    image: dart:2.19
+    volumes:
+      - ./worker:/worker
+    working_dir: /worker
+    command: bash ./app.sh
+    networks:
+      - queue_network
+    depends_on:
+      - queue
